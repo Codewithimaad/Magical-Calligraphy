@@ -28,8 +28,8 @@ const Register = () => {
             logo: easypaisaLogo,
             account: 'Haroon Alam Khan',
             number: '0332-5275117',
-            bgGradient: 'bg-white',
-            shadowColor: 'shadow-emerald-500/20',
+            bgGradient: 'bg-gray-100',         // Light neutral background
+            shadowColor: 'shadow-gray-300',    // Soft shadow
             copyContent: '0332-5275117'
         },
         {
@@ -37,8 +37,8 @@ const Register = () => {
             logo: nayapayLogo,
             account: 'Haroon Alam Khan',
             number: '0330-9082834',
-            bgGradient: 'bg-orange-400',
-            shadowColor: 'shadow-orange-500/20',
+            bgGradient: 'bg-blue-100',         // Soft professional blue
+            shadowColor: 'shadow-gray-400',    // Subtle shadow
             copyContent: '0330-9082834'
         },
         {
@@ -47,11 +47,12 @@ const Register = () => {
             account: 'Haroon Alam Khan',
             number: '0332-5275117',
             iban: 'PK51SADA0000003325275117',
-            bgGradient: 'bg-green-400',
-            shadowColor: 'shadow-pink-500/20',
+            bgGradient: 'bg-green-100',        // Light green for credibility
+            shadowColor: 'shadow-gray-300',   // Soft green shadow
             copyContent: 'PK51SADA0000003325275117'
         }
     ];
+
 
     const copyToClipboard = async (text, index) => {
         try {
@@ -89,7 +90,7 @@ const Register = () => {
                     }}
                 >
                     {/* Main Card */}
-                    <div className="backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-2xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.02]">
+                    <div className="backdrop-blur-xloverflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.02]">
 
                         {/* Header */}
                         <div className="relative p-8 md:p-12 text-center">
@@ -99,7 +100,7 @@ const Register = () => {
                             </h1>
 
                             <div className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-full border border-gray-300 mb-8">
-                                <p className="text-gray-700 text-xl font-semibold">⚡ Transform in Just 30 Days</p>
+                                <p className="text-gray-700 text-base md:text-lg font-semibold">⚡ Transform in Just 30 Days</p>
                             </div>
 
                             <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
@@ -108,8 +109,11 @@ const Register = () => {
                         </div>
 
                         {/* Form Section */}
-                        <div className="p-8 md:p-12 space-y-12">
-                            <div className="backdrop-blur-sm bg-white/40 rounded-2xl p-6 md:p-8 border border-white/20 transform-gpu transition-all duration-500 hover:bg-white/50">
+                        <div className="p-2 md:p-12 space-y-12">
+                            <form
+                                // Replace with your submit handler
+                                className="backdrop-blur-sm bg-white/40 rounded-2xl shadow-2xl p-6 md:p-8 border border-white/20 transform-gpu transition-all duration-500 hover:bg-white/50"
+                            >
                                 <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                                     <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-lg mr-3 flex items-center justify-center">
                                         <span className="text-white text-sm">📝</span>
@@ -123,6 +127,8 @@ const Register = () => {
                                         <label className="text-gray-800 font-medium">Full Name</label>
                                         <input
                                             type="text"
+                                            name="fullName"
+                                            required
                                             className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
                                             placeholder="Enter your full name"
                                         />
@@ -133,20 +139,22 @@ const Register = () => {
                                         <label className="text-gray-800 font-medium">Email Address</label>
                                         <input
                                             type="email"
+                                            name="email"
+                                            required
                                             className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
                                             placeholder="Enter your email"
                                         />
                                     </div>
 
-
-
                                     {/* Whatsapp number */}
                                     <div className="space-y-2">
                                         <label className="text-gray-800 font-medium">Whatsapp Number</label>
                                         <input
-                                            type="number"
+                                            type="tel"
+                                            name="whatsapp"
+                                            required
                                             className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
-                                            placeholder="Enter your age"
+                                            placeholder="Enter your Whatsapp number"
                                         />
                                     </div>
 
@@ -156,7 +164,9 @@ const Register = () => {
                                         <div className="relative">
                                             <input
                                                 type="file"
-                                                onChange={handleFileChange}
+                                                name="paymentScreenshot"
+                                                required
+                                                onChange={handleFileChange} // Replace with your handler
                                                 className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-400 file:text-white hover:file:bg-purple-500 transition-all duration-300"
                                             />
                                         </div>
@@ -172,7 +182,8 @@ const Register = () => {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
+
 
                             {/* Payment Instructions */}
                             <div className="backdrop-blur-sm bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-2xl p-6 md:p-8 border border-cyan-300/20 transform-gpu transition-all duration-500 hover:scale-[1.02]">

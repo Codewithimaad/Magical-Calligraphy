@@ -19,11 +19,11 @@ const Footer = () => {
     const quickLinks = ["Home", "Services", "About", "Testimonials", "Contact"];
 
     return (
-        <footer className="relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 pt-16 pb-8 overflow-hidden">
+        <footer className="relative bg-gradient-to-b from-gray-100 to-white pt-16 pb-8 overflow-hidden">
             {/* Decorative Background */}
             <div className="absolute inset-0 -z-10 overflow-hidden">
-                <div className="absolute top-0 left-1/3 w-48 h-48 bg-indigo-200/10 dark:bg-indigo-800/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-0 right-1/3 w-64 h-64 bg-purple-200/10 dark:bg-purple-800/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                <div className="absolute top-0 left-1/3 w-48 h-48 bg-indigo-200/10  rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 right-1/3 w-64 h-64 bg-purple-200/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
             </div>
 
             <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,11 +34,11 @@ const Footer = () => {
                             <div className="w-20 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-110">
                                 <span className="text-white font-bold text-xl">M</span>
                             </div>
-                            <span className="text-2xl font-extrabold bg-gradient-to-r from-gray-800 to-gray-600 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent tracking-tight">
+                            <span className="text-2xl font-extrabold bg-gradient-to-r from-gray-800 to-gray-600   bg-clip-text text-transparent tracking-tight">
                                 MAGICAL CALLIGRAPHY
                             </span>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-xs">
+                        <p className="text-gray-600  text-sm leading-relaxed max-w-xs">
                             Transform your handwriting with our science-backed cursive course. Achieve elegant writing in just 30 days.
                         </p>
                         <div className="flex space-x-3">
@@ -46,7 +46,7 @@ const Footer = () => {
                                 <a
                                     key={social.name}
                                     href={social.href}
-                                    className="p-2 rounded-full bg-indigo-500/10 dark:bg-indigo-900/10 text-indigo-500 dark:text-indigo-400 hover:bg-indigo-500/20 dark:hover:bg-indigo-900/20 hover:scale-110 transition-all duration-300"
+                                    className="p-2 rounded-full bg-indigo-500/10  text-indigo-500  hover:bg-indigo-500/20  hover:scale-110 transition-all duration-300"
                                     aria-label={social.name}
                                 >
                                     {social.icon}
@@ -57,7 +57,7 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">
+                        <h3 className="text-sm font-semibold text-gray-800  uppercase tracking-wider">
                             Quick Links
                         </h3>
                         <ul className="space-y-2">
@@ -65,10 +65,10 @@ const Footer = () => {
                                 <li key={link}>
                                     <a
                                         href="#"
-                                        className="text-gray-600 dark:text-gray-300 text-sm font-medium hover:text-indigo-500 dark:hover:text-indigo-400 relative group"
+                                        className="text-gray-600  text-sm font-medium hover:text-indigo-500 relative group"
                                     >
                                         {link}
-                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 dark:bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+                                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500  transition-all duration-300 group-hover:w-full"></span>
                                     </a>
                                 </li>
                             ))}
@@ -77,10 +77,10 @@ const Footer = () => {
 
                     {/* Newsletter */}
                     <div className="space-y-4 md:col-span-2">
-                        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider">
+                        <h3 className="text-sm font-semibold text-gray-800  uppercase tracking-wider">
                             Newsletter
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                        <p className="text-gray-600  text-sm leading-relaxed">
                             Get handwriting tips and exclusive offers delivered to your inbox.
                         </p>
                         <form className="mt-2 sm:flex">
@@ -89,7 +89,7 @@ const Footer = () => {
                                 type="email"
                                 id="email"
                                 placeholder="Your email"
-                                className="w-full px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all duration-300"
+                                className="w-full px-4 py-2 rounded-full border border-gray-300  bg-white/50  text-gray-800  focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all duration-300"
                             />
                             <button
                                 type="submit"
@@ -102,8 +102,8 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Section */}
-                <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                <div className="border-t border-gray-200  pt-8 flex flex-col md:flex-row justify-between items-center">
+                    <p className="text-gray-500 0 text-sm">
                         © {currentYear} IMAD Handwriting. All rights reserved.
                     </p>
 

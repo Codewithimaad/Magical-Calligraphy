@@ -64,7 +64,7 @@ const Navbar = () => {
                                 <span className="text-white font-bold text-lg">M</span>
                             </div>
                             <div>
-                                <span className="text-gray-800 dark:text-gray-100 font-extrabold text-xl">
+                                <span className="text-gray-800 font-extrabold text-xl">
                                     MAGICAL
                                 </span>
                                 <div className="text-xs text-indigo-400 font-medium tracking-widest">
@@ -118,7 +118,7 @@ const Navbar = () => {
 
                     {/* Sidebar */}
                     <div
-                        className={`fixed top-0 right-0 h-full w-80 max-w-[calc(100vw-2rem)] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-l border-indigo-500/20 shadow-2xl z-50 overflow-hidden transition-all duration-350 transform ${isAnimatingOut
+                        className={`fixed top-0 right-0 h-full w-80 max-w-[calc(100vw-2rem)] bg-white/90  backdrop-blur-2xl border-l border-indigo-500/20 shadow-2xl z-50 overflow-hidden transition-all duration-350 transform ${isAnimatingOut
                             ? "translate-x-full opacity-0"
                             : isAnimatingIn
                                 ? "translate-x-0 opacity-100"
@@ -132,7 +132,7 @@ const Navbar = () => {
                                     <span className="text-white font-bold text-sm">M</span>
                                 </div>
                                 <div>
-                                    <div className="text-gray-800 dark:text-gray-100 font-bold text-sm">
+                                    <div className="text-gray-800  font-bold text-sm">
                                         MAGICAL
                                     </div>
                                     <div className="text-xs text-indigo-400">CALLIGRAPHY</div>
@@ -153,7 +153,7 @@ const Navbar = () => {
                                     key={index}
                                     to={item.href}
                                     onClick={closeMenu}
-                                    className="p-3 rounded-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-indigo-500 hover:bg-indigo-100/50 transition-all duration-300"
+                                    className="p-3 rounded-xl font-semibold text-gray-800  hover:text-indigo-500 hover:bg-indigo-100/50 transition-all duration-300"
                                 >
                                     {item.name}
                                 </Link>
@@ -165,28 +165,6 @@ const Navbar = () => {
                             >
                                 REGISTER
                             </Link>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="p-4 border-t border-indigo-500/20 flex justify-center space-x-4">
-                            <a
-                                href="#"
-                                className="p-2 rounded-full bg-indigo-500/20 text-indigo-500 hover:bg-indigo-500/40 transition-all duration-200"
-                            >
-                                <TwitterIcon />
-                            </a>
-                            <a
-                                href="#"
-                                className="p-2 rounded-full bg-indigo-500/20 text-indigo-500 hover:bg-indigo-500/40 transition-all duration-200"
-                            >
-                                <LinkedinIcon />
-                            </a>
-                            <a
-                                href="#"
-                                className="p-2 rounded-full bg-indigo-500/20 text-indigo-500 hover:bg-indigo-500/40 transition-all duration-200"
-                            >
-                                <MailIcon />
-                            </a>
                         </div>
                     </div>
                 </>

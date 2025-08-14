@@ -4,7 +4,7 @@ const CallToAction = () => {
     return (
         <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32 overflow-hidden">
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
                 {/* Main CTA Container */}
                 <div className="backdrop-blur-xl bg-white/80 border border-white/30 rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl text-center">
 

@@ -10,8 +10,10 @@ const Hero = () => {
                 <div className="p-6 sm:p-8 md:p-10 lg:p-12 text-center transition-all duration-500">
                     {/* Main Heading */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 sm:mb-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight">
-                        Improve Your Handwriting in
-                        <span className="block sm:inline mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"> Just 30 Days</span>
+                        Improve Your Handwriting in Just 30 Days
+
+                        <span className="block sm:inline mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"> With Simple Cursive Strokes Anyone
+                            Can Learn.</span>
                     </h1>
 
                     {/* Subtitle */}

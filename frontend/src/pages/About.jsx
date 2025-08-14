@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const About = () => {
     return (
@@ -24,7 +25,7 @@ const About = () => {
                 <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-3xl p-8 shadow-xl mb-16">
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="md:w-1/3">
-                            <div className="w-full h-64 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center text-white text-8xl font-bold">
+                            <div className="w-32 h-32 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white text-7xl font-bold">
                                 M
                             </div>
                         </div>
@@ -58,7 +59,7 @@ const About = () => {
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="md:w-1/3 flex justify-center">
                             <div className="w-64 h-64 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white text-8xl font-bold shadow-xl">
-                                S
+                                M
                             </div>
                         </div>
                         <div className="md:w-2/3">
@@ -85,7 +86,7 @@ const About = () => {
                 </div>
 
                 {/* Methodology Section */}
-                <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-3xl p-8 shadow-xl">
+                <div className="backdrop-blur-md  p-8">
                     <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Our Unique Methodology</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
@@ -132,10 +133,10 @@ const About = () => {
                 {/* CTA Section */}
                 <div className="mt-16 text-center">
                     <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">Ready to Begin Your Handwriting Journey?</h2>
-                    <button className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden mx-auto">
+                    <Link to='/register' className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden mx-auto">
                         <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <span className="relative z-10">Start Learning Today</span>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>

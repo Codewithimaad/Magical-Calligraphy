@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Testimonials = () => {
     return (
@@ -108,10 +109,10 @@ const Testimonials = () => {
                     <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
                         Join thousands of satisfied students who've unlocked the secret to beautiful, confident handwriting.
                     </p>
-                    <button className="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden">
+                    <Link to='/register' className="group relative inline-flex items-center justify-center px-4 md:px-8 py-3 text-base md:text-lg font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <span className="relative z-10">Enroll Now for Rs 1,500</span>
-                    </button>
+                    </Link>
                     <p className="mt-4 text-sm text-gray-500">30-Day Money-Back Guarantee</p>
                 </div>
             </div>

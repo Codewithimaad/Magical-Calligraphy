@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
+
 const Hero = () => {
     return (
-        <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-16">
+        <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-0 sm:px-6 lg:px-8 py-16">
 
             {/* Main Content Container */}
             <div className="relative z-10 w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,18 +51,18 @@ const Hero = () => {
 
                     {/* CTA Button */}
                     <div className="space-y-4">
-                        <button
-                            onClick={() => { /* Replace with your navigation logic */ }}
-                            className="group relative inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden w-full sm:w-auto"
+                        <Link to='/register'
+
+                            className="group relative inline-flex items-center justify-center px-2 sm:px-10 py-4 sm:py-4 text-base sm:text-xl font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden w-full sm:w-auto"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             <span className="relative z-10 flex items-center space-x-3">
                                 <span>Start Learning Today!</span>
-                                <span className="text-xl sm:text-2xl font-medium">Rs 1,500</span>
+                                <span className="text-base sm:text-2xl font-medium">Rs 1,500</span>
                                 <span className="text-sm font-normal opacity-90">Only</span>
                             </span>
                             <div className="absolute inset-0 -z-10 bg-gradient-to-r from-indigo-400/30 via-purple-400/30 to-pink-400/30 blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                        </button>
+                        </Link>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-base text-gray-600">
                             <div className="flex items-center space-x-2">

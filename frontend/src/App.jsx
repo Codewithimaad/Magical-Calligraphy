@@ -3,30 +3,32 @@ import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
+import Testimonials from "./pages/Testimonials";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 const App = () => {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      <div className='fixed inset-0 -z-10'>
-        <div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
-      </div>
+    <Router>
+      <div className="relative min-h-screen w-full overflow-hidden">
+        <div className='fixed inset-0 -z-10'>
+          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
+        </div>
 
-      <Navbar />
-      <div className="mt-20">
-        <Router>
+        <Navbar />
+        <div className="mt-20">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/testimonials" element={<Testimonials />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+
           </Routes>
-        </Router>
+        </div>
+        <Footer />
       </div>
-      {/* Router */}
-
-
-      <Footer />
-
-
-    </div>
+    </Router>
   );
 };
 

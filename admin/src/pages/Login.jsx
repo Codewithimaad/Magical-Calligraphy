@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -157,6 +158,14 @@ const Login = () => {
                                 >
                                     Sign In
                                 </button>
+
+                                 {/* Login Button */}
+                                 <Link to='/dashboard'
+                                    
+                                    className="block w-full text-center py-4 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 transform transition-all duration-300"
+                                >
+                                    Go to Dashboard
+                                </Link>
 
 
                               

@@ -38,7 +38,7 @@ const About = () => {
                             </p>
                             <div className="grid grid-cols-2 gap-4">
                                 {[
-                                    { number: "10,000+", text: "Students Taught" },
+                                    { number: "1,000+", text: "Students Taught" },
                                     { number: "97%", text: "Success Rate" },
                                     { number: "13", text: "Video Lessons" },
                                     { number: "30", text: "Days to Mastery" }
@@ -74,13 +74,7 @@ const About = () => {
                                 "Handwriting is the visible expression of our thoughts. When we improve our writing, we improve how we communicate
                                 with the world." - Musa Alam
                             </p>
-                            <div className="flex flex-wrap gap-2">
-                                {['Certified Graphologist', 'Gold Medalist - National Penmanship Awards', 'Author - "The Art of Elegant Writing"', 'Featured in Times of India'].map((badge, index) => (
-                                    <span key={index} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                                        {badge}
-                                    </span>
-                                ))}
-                            </div>
+                           
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,8 @@ import Hero from "../components/Hero";
 import BeforeAfter from "../components/BeforeAfter";
 import WhyCursive from "../components/WhyCursive";
 import CallToAction from "../components/CallToAction";
+import ImageSection from "../components/ImageSection";
+
 
 const Home = () => {
     return (
@@ -9,6 +11,7 @@ const Home = () => {
 
             {/* Sections */}
             <Hero />
+            <ImageSection />
             <BeforeAfter />
             <WhyCursive />
             <CallToAction />

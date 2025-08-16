@@ -10,10 +10,10 @@ const Hero = () => {
                 <div className="p-6 sm:p-8 md:p-10 lg:p-12 text-center transition-all duration-500">
                     {/* Main Heading */}
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 sm:mb-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 bg-clip-text text-transparent leading-tight tracking-tight">
-                        Improve Your Handwriting in Just 30 Days
+                    Improve Your English Handwriting 
+                    
 
-                        <span className="block sm:inline mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"> With Simple Cursive Strokes Anyone
-                            Can Learn.</span>
+                        <span className="block sm:inline mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"> in 30 Days</span>
                     </h1>
 
                     {/* Subtitle */}
@@ -25,11 +25,11 @@ const Hero = () => {
                     <div className="backdrop-blur-md bg-white/20 border border-white/20 rounded-2xl p-6 sm:p-8 mb-8 sm:mb-10 shadow-lg">
                         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-left max-w-3xl mx-auto">
                             {[
-                                "Impress with Beautiful Writing",
-                                "Write Elegantly in Exams",
-                                "Boost Grades with Better Presentation",
-                                "Teach Kids Professional Handwriting",
-                                "Eliminate Hand Fatigue",
+                                "HD Recorded Video Lessons",
+                                "Proven Techniques",
+                                "Practical Exercises",
+                                "Printable Worksheets for Practice",
+                                "WhatsApp community",
                                 "Develop a Lifelong Skill"
                             ].map((benefit, index) => (
                                 <li

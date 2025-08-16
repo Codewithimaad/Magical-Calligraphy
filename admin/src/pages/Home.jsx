@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const CallToAction = () => {
+const Home = () => {
     return (
         <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32 overflow-hidden">
 
@@ -145,4 +145,4 @@ const CallToAction = () => {
     );
 };
 
-export default CallToAction;
+export default Home;

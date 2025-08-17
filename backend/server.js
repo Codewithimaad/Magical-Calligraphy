@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import cloudinary from "./config/cloudinary.js"; // ✅ Imported
 
+
 // Load environment variables
 dotenv.config();
 
@@ -13,6 +14,8 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+
 
 
 const allowedOrigins = [

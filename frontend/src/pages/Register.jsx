@@ -47,8 +47,14 @@ useEffect(() => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    const handleFileChange = (e) => setFile(e.target.files[0]);
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+          setFile(e.target.files[0]); // update your state
+          setErrors({ ...errors, paymentScreenshot: '' }); // clear error
+        }
+      };
 
+      
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -282,19 +288,22 @@ useEffect(() => {
 
         {/* File Upload */}
         <div className="md:col-span-2 space-y-2">
-            <label className="text-gray-800 font-medium">Upload Payment Screenshot</label>
-            <div className="relative">
-                <input
-                    type="file"
-                    name="paymentScreenshot"
-                    onChange={handleFileChange}
-                    className={`w-full px-4 py-3 bg-gray-200/50 border ${errors.paymentScreenshot ? 'border-red-400' : 'border-white/30'} rounded-xl text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-400 file:text-white hover:file:bg-purple-500 transition-all duration-300`}
-                />
-                {errors.paymentScreenshot && (
-                    <p className="mt-1 text-sm text-red-600">{errors.paymentScreenshot}</p>
-                )}
-            </div>
-        </div>
+  <label className="text-gray-800 font-medium">Upload Payment Screenshot</label>
+  <div className="relative">
+    <input
+      type="file"
+      name="paymentScreenshot"
+      accept="image/png, image/jpeg, image/jpg"
+      onChange={handleFileChange}
+      className={`w-full px-4 py-3 bg-gray-200/50 border ${
+        errors.paymentScreenshot ? 'border-red-400' : 'border-white/30'
+      } rounded-xl text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-400 file:text-white hover:file:bg-purple-500 transition-all duration-300`}
+    />
+    {errors.paymentScreenshot && (
+      <p className="mt-1 text-sm text-red-600">{errors.paymentScreenshot}</p>
+    )}
+  </div>
+</div>
 
         {/* Register Button */}
         <div className="flex justify-center mt-8 md:col-span-2">

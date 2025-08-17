@@ -1,32 +1,29 @@
+// utils/upload.js
 import multer from 'multer';
-import path from 'path';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'Magical Calligraphy', // Cloudinary folder
+        allowed_formats: ['jpg', 'png', 'jpeg'],
+        transformation: [{ width: 500, height: 500, crop: 'limit' }],
     },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
 });
 
-// File filter to only allow images
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);
-    } else {
-        cb(new Error('Only image files are allowed!'), false);
-    }
-};
-
 const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
+    storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
-    }
+        fileSize: 2 * 1024 * 1024, // 2MB max
+        files: 5, // max 5 files at a time
+    },
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/image\/(png|jpeg|jpg)/)) {
+            return cb(new Error('Only PNG, JPG, JPEG images are allowed (max 2MB each)'));
+        }
+        cb(null, true);
+    },
 });
 
 export default upload;

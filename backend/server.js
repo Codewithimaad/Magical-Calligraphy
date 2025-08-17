@@ -20,19 +20,12 @@ const allowedOrigins = [
     process.env.ADMIN_URL
 ];
 
-app.use(
-    cors({
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                // Return a proper error response
-                callback(null, false); // just reject the origin
-            }
-        },
-        credentials: true,
-    })
-);
+
+
+app.use(cors({
+    origin: allowedOrigins,   // just pass the array
+    credentials: true
+}));
 
 
 

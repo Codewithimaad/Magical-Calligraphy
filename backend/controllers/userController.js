@@ -1,35 +1,73 @@
+
 import User from "../models/User.js";
-import Stripe from "stripe";
+import cloudinary from "../config/cloudinary.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET);
-
+// Register new user
 export const registerUser = async (req, res) => {
-    const { name, email, phone } = req.body;
-    const user = await User.create({ name, email, phone });
-    res.json(user);
-};
-
-export const handlePayment = async (req, res) => {
-    const { userId, amount } = req.body;
-
     try {
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            line_items: [{
-                price_data: {
-                    currency: "usd",
-                    product_data: { name: "Magical Calligraphy Course" },
-                    unit_amount: amount * 100,
-                },
-                quantity: 1,
-            }],
-            mode: "payment",
-            success_url: `${process.env.CLIENT_URL}/success?userId=${userId}`,
-            cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        const { fullName, email, whatsapp } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Payment screenshot is required",
+            });
+        }
+
+        // Upload file to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "payment_screenshots",
         });
 
-        res.json({ url: session.url });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User with this email already exists",
+            });
+        }
+
+        // Create new user
+        const user = await User.create({
+            fullName,
+            email,
+            whatsapp,
+            paymentScreenshot: result.secure_url, // ✅ save Cloudinary URL
+        });
+
+        res.status(201).json({
+            success: true,
+            message:
+                "Registration successful! We will verify your payment and contact you soon.",
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                status: user.status,
+            },
+        });
+    } catch (error) {
+        console.error("Registration error:", error);
+
+        if (error.name === "ValidationError") {
+            const validationErrors = Object.values(error.errors).map(
+                (err) => err.message
+            );
+            return res.status(400).json({
+                success: false,
+                message: "Validation failed",
+                errors: validationErrors,
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: "Internal server error. Please try again later.",
+        });
     }
 };
+
+
+
+

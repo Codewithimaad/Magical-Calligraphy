@@ -1,9 +1,13 @@
 import express from "express";
-import { registerUser, handlePayment } from "../controllers/userController.js";
+import {
+    registerUser,
+} from "../controllers/userController.js";
+import upload from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/payment", handlePayment);
+// Public routes
+router.post("/register", upload.single('paymentScreenshot'), registerUser);
+
 
 export default router;

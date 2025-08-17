@@ -1,13 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import sadapayLogo from '../assets/sadapay.png'
 import nayapayLogo from '../assets/nayapay.png'
 import easypaisaLogo from '../assets/easypaisa.png'
+import axios from 'axios'
+import { AuthContext } from "../context/authContext";
 
 
 const Register = () => {
+    const { backendUrl } = useContext(AuthContext);
     const [file, setFile] = useState(null);
     const [copiedIndex, setCopiedIndex] = useState(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({ text: '', type: '' }); // 'success' or 'error'
+    const [fileError, setFileError] = useState('');
+
+    const [errors, setErrors] = useState({
+        fullName: '',
+        email: '',
+        whatsapp: '',
+        paymentScreenshot: ''
+    });
+
+
+    // Add this useEffect inside Register component
+useEffect(() => {
+    if (message.text) {
+        const timer = setTimeout(() => {
+            setMessage({ text: '', type: '' });
+        }, 5000);
+
+        // Cleanup in case message changes before 5 seconds
+        return () => clearTimeout(timer);
+    }
+}, [message]);
+
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -21,6 +48,87 @@ const Register = () => {
     }, []);
 
     const handleFileChange = (e) => setFile(e.target.files[0]);
+
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Clear previous messages and errors
+    setMessage({ text: '', type: '' });
+    setErrors({
+        fullName: '',
+        email: '',
+        whatsapp: '',
+        paymentScreenshot: ''
+    });
+    
+    // Validate all fields
+    let isValid = true;
+    const newErrors = {
+        fullName: '',
+        email: '',
+        whatsapp: '',
+        paymentScreenshot: ''
+    };
+    
+    if (!e.target.fullName.value.trim()) {
+        newErrors.fullName = 'Full name is required';
+        isValid = false;
+    }
+    
+    if (!e.target.email.value.trim()) {
+        newErrors.email = 'Email is required';
+        isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.email.value)) {
+        newErrors.email = 'Please enter a valid email';
+        isValid = false;
+    }
+    
+    if (!e.target.whatsapp.value.trim()) {
+        newErrors.whatsapp = 'Whatsapp number is required';
+        isValid = false;
+    }
+    
+    if (!file) {
+        newErrors.paymentScreenshot = 'Please upload your payment screenshot';
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        setErrors(newErrors);
+        return;
+    }
+    
+    // Rest of your submit logic...
+    const formData = new FormData();
+    formData.append("fullName", e.target.fullName.value);
+    formData.append("email", e.target.email.value);
+    formData.append("whatsapp", e.target.whatsapp.value);
+    formData.append("paymentScreenshot", file);
+    
+    try {
+        setLoading(true);
+        const response = await axios.post(`${backendUrl}/api/users/register`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        
+        setMessage({ 
+            text: response.data.message || "Registration successful!", 
+            type: 'success' 
+        });
+        e.target.reset();
+        setFile(null);
+    } catch (err) {
+        setMessage({ 
+            text: err.response?.data?.message || "Something went wrong", 
+            type: 'error' 
+        });
+        console.error(err);
+    } finally {
+        setLoading(false);
+    }
+};
+    
 
     const paymentCards = [
         {
@@ -110,79 +218,106 @@ const Register = () => {
 
                         {/* Form Section */}
                         <div className="p-2 md:p-12 space-y-12">
-                            <form
-                                // Replace with your submit handler
-                                className="backdrop-blur-sm bg-white/40 rounded-2xl shadow-2xl p-6 md:p-8 border border-white/20 transform-gpu transition-all duration-500 hover:bg-white/50"
-                            >
-                                <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-lg mr-3 flex items-center justify-center">
-                                        <span className="text-white text-sm">📝</span>
-                                    </div>
-                                    Registration Form
-                                </h2>
+                        <form
+    onSubmit={handleSubmit}
+    className="backdrop-blur-sm bg-white/40 rounded-2xl shadow-2xl p-6 md:p-8 border border-white/20 transform-gpu transition-all duration-500 hover:bg-white/50"
+>
+    <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-lg mr-3 flex items-center justify-center">
+            <span className="text-white text-sm">📝</span>
+        </div>
+        Registration Form
+    </h2>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {/* Full Name */}
-                                    <div className="space-y-2">
-                                        <label className="text-gray-800 font-medium">Full Name</label>
-                                        <input
-                                            type="text"
-                                            name="fullName"
-                                            required
-                                            className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
-                                            placeholder="Enter your full name"
-                                        />
-                                    </div>
+    {message.text && (
+        <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' 
+            ? 'bg-green-100 text-green-800 border border-green-200' 
+            : 'bg-red-100 text-red-800 border border-red-200'}`}>
+            {message.text}
+        </div>
+    )}
 
-                                    {/* Email */}
-                                    <div className="space-y-2">
-                                        <label className="text-gray-800 font-medium">Email Address</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            required
-                                            className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
-                                            placeholder="Enter your email"
-                                        />
-                                    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Full Name */}
+        <div className="space-y-2">
+            <label className="text-gray-800 font-medium">Full Name</label>
+            <input
+                type="text"
+                name="fullName"
+                className={`w-full px-4 py-3 bg-gray-200/50 border ${errors.fullName ? 'border-red-400' : 'border-white/30'} rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300`}
+                placeholder="Enter your full name"
+            />
+            {errors.fullName && (
+                <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
+            )}
+        </div>
 
-                                    {/* Whatsapp number */}
-                                    <div className="space-y-2">
-                                        <label className="text-gray-800 font-medium">Whatsapp Number</label>
-                                        <input
-                                            type="tel"
-                                            name="whatsapp"
-                                            required
-                                            className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300"
-                                            placeholder="Enter your Whatsapp number"
-                                        />
-                                    </div>
+        {/* Email */}
+        <div className="space-y-2">
+            <label className="text-gray-800 font-medium">Email Address</label>
+            <input
+                type="email"
+                name="email"
+                className={`w-full px-4 py-3 bg-gray-200/50 border ${errors.email ? 'border-red-400' : 'border-white/30'} rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300`}
+                placeholder="Enter your email"
+            />
+            {errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            )}
+        </div>
 
-                                    {/* File Upload */}
-                                    <div className="md:col-span-2 space-y-2">
-                                        <label className="text-gray-800 font-medium">Upload Payment Screenshot</label>
-                                        <div className="relative">
-                                            <input
-                                                type="file"
-                                                name="paymentScreenshot"
-                                                required
-                                                onChange={handleFileChange} // Replace with your handler
-                                                className="w-full px-4 py-3 bg-gray-200/50 border border-white/30 rounded-xl text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-400 file:text-white hover:file:bg-purple-500 transition-all duration-300"
-                                            />
-                                        </div>
-                                    </div>
+        {/* Whatsapp number */}
+        <div className="space-y-2">
+            <label className="text-gray-800 font-medium">Whatsapp Number</label>
+            <input
+                type="number"
+                name="whatsapp"
+                className={`w-full px-4 py-3 bg-gray-200/50 border ${errors.whatsapp ? 'border-red-400' : 'border-white/30'} rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300`}
+                placeholder="Enter your Whatsapp number"
+            />
+            {errors.whatsapp && (
+                <p className="mt-1 text-sm text-red-600">{errors.whatsapp}</p>
+            )}
+        </div>
 
-                                    {/* Register Button */}
-                                    <div className="flex justify-center mt-8 md:col-span-2">
-                                        <button
-                                            type="submit"
-                                            className="px-8 py-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg shadow-indigo-500/30 text-white font-bold hover:scale-105 hover:shadow-indigo-500/50 transition-all duration-300"
-                                        >
-                                            Register Now
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+        {/* File Upload */}
+        <div className="md:col-span-2 space-y-2">
+            <label className="text-gray-800 font-medium">Upload Payment Screenshot</label>
+            <div className="relative">
+                <input
+                    type="file"
+                    name="paymentScreenshot"
+                    onChange={handleFileChange}
+                    className={`w-full px-4 py-3 bg-gray-200/50 border ${errors.paymentScreenshot ? 'border-red-400' : 'border-white/30'} rounded-xl text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-400 file:text-white hover:file:bg-purple-500 transition-all duration-300`}
+                />
+                {errors.paymentScreenshot && (
+                    <p className="mt-1 text-sm text-red-600">{errors.paymentScreenshot}</p>
+                )}
+            </div>
+        </div>
+
+        {/* Register Button */}
+        <div className="flex justify-center mt-8 md:col-span-2">
+            <button
+                type="submit"
+                disabled={loading}
+                className={`px-8 py-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg shadow-indigo-500/30 text-white font-bold hover:scale-105 hover:shadow-indigo-500/50 transition-all duration-300 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+                {loading ? (
+                    <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                    </span>
+                ) : (
+                    'Register Now'
+                )}
+            </button>
+        </div>
+    </div>
+</form>
 
 
                             {/* Payment Instructions */}

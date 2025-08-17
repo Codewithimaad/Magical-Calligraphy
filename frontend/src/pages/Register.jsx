@@ -115,8 +115,9 @@ useEffect(() => {
     try {
         setLoading(true);
         const response = await axios.post(`${backendUrl}/api/users/register`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+            withCredentials: true,
+          });
+          
         
         setMessage({ 
             text: response.data.message || "Registration successful!", 

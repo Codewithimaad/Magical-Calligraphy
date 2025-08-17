@@ -67,40 +67,53 @@ const sendCourseLinkEmail = async (user) => {
 
 export const loginAdmin = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, rememberMe } = req.body; // include rememberMe
         const admin = await Admin.findOne({ username });
-        if (!admin) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid credentials"
-            });
-        }
+        if (!admin) return res.status(400).json({ success: false, message: "Invalid credentials" });
 
         const isMatch = await bcrypt.compare(password, admin.password);
-        if (!isMatch) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid credentials"
-            });
-        }
+        if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials" });
 
-        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        // Set token expiry based on rememberMe
+        const tokenExpiry = rememberMe ? "7d" : "1d";
+        const cookieMaxAge = rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
+        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: tokenExpiry });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: cookieMaxAge,
+        });
+
         res.json({
             success: true,
-            token,
-            admin: {
-                id: admin._id,
-                username: admin.username
-            }
+            admin: { id: admin._id, username: admin.username },
         });
+
     } catch (error) {
-        console.error('Admin login error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
+        console.error("Admin login error:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+
+
+
+// controllers/adminController.js
+export const logoutAdmin = (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        expires: new Date(0) // Expire immediately
+    });
+    res.json({ success: true, message: "Logged out successfully" });
+};
+
+
+
 
 // Get all users (for admin)
 export const getAllUsers = async (req, res) => {

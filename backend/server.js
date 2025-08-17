@@ -5,7 +5,8 @@ import connectDB from "./config/configDB.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import cloudinary from "./config/cloudinary.js"; // ✅ Imported
-
+import cookieParser from "cookie-parser";
+import helmet from "helmet"; // ✅ Added
 
 // Load environment variables
 dotenv.config();
@@ -15,23 +16,28 @@ connectDB();
 
 const app = express();
 
-
-
-
 const allowedOrigins = [
     process.env.CLIENT_URL,
     process.env.ADMIN_URL
 ];
 
+// ✅ Helmet middleware for security headers
+app.use(helmet());
 
-
+// ✅ CORS setup with multiple origins
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

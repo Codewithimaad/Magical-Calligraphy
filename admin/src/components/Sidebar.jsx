@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
-  
+
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
     { name: 'Users', href: '/users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z' },
@@ -13,48 +12,50 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <>
-      {/* Glass morphism backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30 lg:hidden"
+          className="fixed inset-0 z-40 backdrop-blur-md bg-black/40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Modern sidebar */}
       <div 
         className={`
           fixed inset-y-0 left-0 z-50 w-72
-          bg-white/95 backdrop-blur-lg border-r border-gray-100
-          transform transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
+          bg-gradient-to-b from-slate-50/95 to-white/95 backdrop-blur-xl
+          border-r border-slate-200/80 shadow-2xl shadow-slate-900/5
+          transform transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
           flex flex-col h-screen
-          ${isOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full'}
-          lg:translate-x-0 lg:shadow-sm lg:static lg:inset-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0 lg:shadow-lg lg:static lg:inset-0
+          before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/20 before:to-transparent before:pointer-events-none
         `}
       >
-        {/* Logo with modern design */}
-        <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100">
+        {/* Logo */}
+        <div className="flex items-center justify-between h-20 px-6 border-b border-slate-200/60 bg-white/40 backdrop-blur-sm">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-sm">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 ring-1 ring-white/20">
+              <svg className="w-5 h-5 text-white drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h1 className="text-xl font-semibold text-gray-800">Magical Calligraphy</h1>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              Magical Calligraphy
+            </h1>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2.5 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-white/60 backdrop-blur-sm transition-all duration-200 ring-1 ring-slate-200/50 hover:ring-slate-300/50"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Navigation with modern styling */}
-        <nav className="flex-1 overflow-y-auto px-4 py-6">
-          <div className="space-y-1">
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-4 py-8">
+          <div className="space-y-2">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -62,27 +63,51 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   key={item.name}
                   to={item.href}
                   className={`
-                    group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200
+                    group relative flex items-center px-4 py-3.5 text-sm font-semibold rounded-2xl 
+                    transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]
                     ${isActive 
-                      ? 'bg-gradient-to-r from-purple-50 to-pink-50 text-purple-600 border-l-4 border-purple-500' 
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-white/20' 
+                      : 'text-slate-600 hover:text-slate-800 hover:bg-white/70 backdrop-blur-sm ring-1 ring-slate-200/40 hover:ring-slate-300/60 hover:shadow-md hover:shadow-slate-200/50'
                     }
+                    transform hover:scale-[1.02] active:scale-[0.98]
                   `}
                 >
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 opacity-100">
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-white/5"></div>
+                    </div>
+                  )}
+                  
                   <svg 
                     className={`
-                      mr-3 h-5 w-5 transition-colors duration-200
-                      ${isActive ? 'text-purple-500' : 'text-gray-400 group-hover:text-gray-500'}
+                      relative z-10 mr-3 h-5 w-5 transition-all duration-300
+                      ${isActive 
+                        ? 'text-white drop-shadow-sm' 
+                        : 'text-slate-400 group-hover:text-slate-600'
+                      }
                     `} 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon} />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={item.icon} />
                   </svg>
-                  {item.name}
+                  
+                  <span className="relative z-10 font-medium">
+                    {item.name}
+                  </span>
+                  
                   {isActive && (
-                    <span className="ml-auto w-2 h-2 bg-purple-500 rounded-full"></span>
+                    <span className="relative z-10 ml-auto flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/60 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-white/90 shadow-sm"></span>
+                    </span>
+                  )}
+
+                  {/* Hover glow effect */}
+                  {!isActive && (
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/5 transition-all duration-300"></div>
                   )}
                 </Link>
               );
@@ -90,21 +115,16 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         </nav>
 
-        {/* Modern user profile section */}
-        <div className="p-5 border-t border-gray-100">
-          <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
-              <span className="text-white font-medium text-sm">AK</span>
+        {/* Bottom decoration */}
+        <div className="p-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+          <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 to-purple-50/80 backdrop-blur-sm ring-1 ring-indigo-100/60">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex-shrink-0 ring-2 ring-white/50"></div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-slate-700 truncate">Welcome back!</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">Admin User</p>
-              <p className="text-xs text-gray-500 truncate">admin@example.com</p>
-            </div>
-            <button className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-200 transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>

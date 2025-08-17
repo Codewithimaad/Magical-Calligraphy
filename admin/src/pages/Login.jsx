@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from "../context/authContext";
+import axios from "axios";
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const Login = () => {
+    const navigate = useNavigate();
+    const { checkAuth, handleLogin } = useContext(AuthContext);
+
     const [showPassword, setShowPassword] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [formData, setFormData] = useState({
@@ -11,6 +21,32 @@ const Login = () => {
         rememberMe: false
     });
 
+    // Prefill email if remembered
+    useEffect(() => {
+        const savedEmail = localStorage.getItem("rememberedEmail");
+        if (savedEmail) {
+            setFormData(prev => ({ ...prev, email: savedEmail, rememberMe: true }));
+        }
+    }, []);
+
+    // Check if already logged in
+    useEffect(() => {
+        const verify = async () => {
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                await MySwal.fire({
+                    icon: 'success',
+                    title: 'Already Logged In',
+                    text: 'You are already logged in!',
+                    confirmButtonColor: '#6366F1',
+                });
+                navigate("/dashboard");
+            }
+        };
+        verify();
+    }, []);
+
+    // Mouse move effect
     useEffect(() => {
         const handleMouseMove = (e) => {
             setMousePosition({
@@ -30,10 +66,9 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        console.log('Login data:', formData);
-        // Handle login logic here
+        handleLogin(formData); // ✅ Use context login
     };
 
     return (
@@ -62,16 +97,14 @@ const Login = () => {
                         transform: `perspective(1000px) rotateX(${mousePosition.y * 0.1}deg) rotateY(${mousePosition.x * 0.1}deg)`
                     }}
                 >
-                    {/* Main Login Card */}
                     <div className="backdrop-blur-xl bg-white/10 md:border md:border-white/20 md:rounded-3xl md:shadow-2xl overflow-hidden transform-gpu transition-all duration-700 hover:scale-[1.02] opacity-0 animate-pulse"
                          style={{
                              animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                              animationDelay: '0.2s'
                          }}>
-                        
+
                         {/* Header */}
                         <div className="relative p-8 text-center">
-                            {/* Logo */}
                             <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg transform-gpu transition-all duration-500 hover:scale-110"
                                  style={{ animation: 'pulse 2s infinite' }}>
                                 <User className="w-8 h-8 text-white" />
@@ -86,10 +119,9 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Login Form */}
+                        {/* Form */}
                         <div className="p-8">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Email Field */}
+                            <form onSubmit={onSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-gray-700/90 font-medium text-sm">Email Address</label>
                                     <div className="relative">
@@ -108,7 +140,6 @@ const Login = () => {
                                     </div>
                                 </div>
 
-                                {/* Password Field */}
                                 <div className="space-y-2">
                                     <label className="text-gray-700/90 font-medium text-sm">Password</label>
                                     <div className="relative">
@@ -134,7 +165,6 @@ const Login = () => {
                                     </div>
                                 </div>
 
-                                {/* Remember Me & Forgot Password */}
                                 <div className="flex items-center justify-between">
                                     <label className="flex items-center">
                                         <input
@@ -151,26 +181,12 @@ const Login = () => {
                                     </button>
                                 </div>
 
-                                {/* Login Button */}
                                 <button
                                     type="submit"
                                     className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 transform transition-all duration-300"
                                 >
                                     Sign In
                                 </button>
-
-                                 {/* Login Button */}
-                                 <Link to='/dashboard'
-                                    
-                                    className="block w-full text-center py-4 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 transform transition-all duration-300"
-                                >
-                                    Go to Dashboard
-                                </Link>
-
-
-                              
-
-            
                             </form>
                         </div>
                     </div>

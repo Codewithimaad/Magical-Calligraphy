@@ -1,56 +1,87 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ setIsOpen }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { handleLogout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    await handleLogout();
+    navigate("/");
+  }
 
   return (
-    <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-md">
-      <div className="flex items-center justify-between h-16 px-5">
+    <header className="relative bg-gradient-to-r from-white/90 via-slate-50/95 to-white/90 backdrop-blur-xl border-b border-slate-200/60 shadow-xl shadow-slate-900/5">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none"></div>
+      
+      <div className="relative flex items-center justify-between h-16 px-6">
         {/* Left side - Mobile menu button */}
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setIsOpen(true)}
-            className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2.5 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-white/70 backdrop-blur-sm transition-all duration-200 ring-1 ring-slate-200/40 hover:ring-slate-300/60 hover:shadow-md hover:shadow-slate-200/50 transform hover:scale-105 active:scale-95"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 6h16M4 12h16M4 18h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-
-        
+          
+          {/* Page title or breadcrumb */}
+          <div className="hidden md:block">
+            <h2 className="text-lg font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              Dashboard
+            </h2>
+          </div>
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-5">
+        
+
           {/* Notification bell */}
-          <button className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 relative transition-colors">
+          <button className="relative p-2.5 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-white/60 backdrop-blur-sm transition-all duration-200 ring-1 ring-slate-200/40 hover:ring-slate-300/60 hover:shadow-md hover:shadow-slate-200/50 transform hover:scale-105 active:scale-95 group">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            {/* Notification indicator */}
+            <span className="absolute top-1.5 right-1.5 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 ring-2 ring-white shadow-sm"></span>
+            </span>
           </button>
 
+          {/* Divider */}
+          <div className="hidden sm:block h-8 w-px bg-gradient-to-b from-transparent via-slate-300 to-transparent"></div>
 
-          {/* Profile dropdown - Modern with subtle animation */}
-          <div className="relative">
-            <button className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
-                <span className="text-white font-medium text-sm">AK</span>
-              </div>
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+          {/* User Profile */}
+          <div className="flex items-center space-x-3">
+            <div className="hidden sm:block text-right">
+              <p className="text-sm font-semibold text-slate-800">Alex Kumar</p>
+              <p className="text-xs text-slate-500">Administrator</p>
+            </div>
             
-            {/* Dropdown menu (hidden by default) */}
-            <div className="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Your Profile</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Sign out</a>
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 ring-2 ring-white/50 backdrop-blur-sm">
+              <span className="text-white font-bold text-sm drop-shadow-sm">AK</span>
             </div>
           </div>
+
+          {/* Logout Button */}
+          <button
+            onClick={logout}
+            className="flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all duration-200 ring-1 ring-white/20 hover:scale-105 active:scale-95 backdrop-blur-sm group"
+          >
+            <svg className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span className="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
+
+      {/* Bottom glow effect */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-200/50 to-transparent"></div>
     </header>
   );
 };

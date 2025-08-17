@@ -82,10 +82,11 @@ export const loginAdmin = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production", // must be true for HTTPS
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: cookieMaxAge,
         });
+
 
         res.json({
             success: true,
@@ -101,16 +102,16 @@ export const loginAdmin = async (req, res) => {
 
 
 
-// controllers/adminController.js
 export const logoutAdmin = (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        expires: new Date(0) // Expire immediately
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        expires: new Date(0), // expire immediately
     });
     res.json({ success: true, message: "Logged out successfully" });
 };
+
 
 
 

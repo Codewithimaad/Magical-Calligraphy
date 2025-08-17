@@ -37,7 +37,7 @@ const DashboardLayout = ({ children }) => {
     <div className="min-h-screen">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />

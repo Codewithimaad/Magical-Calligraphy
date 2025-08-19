@@ -7,7 +7,11 @@ import {
     deleteUser,
     getUser,
     getAllUsers,
-    logoutAdmin
+    logoutAdmin,
+    updateAdminName,
+    getAdminProfile,
+    updatePassword,
+    deleteAccount
 } from "../controllers/adminController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -28,5 +32,12 @@ router.post("/send-link/:id", protect, sendCourseLink);
 router.delete("/users/:id", protect, deleteUser);   // ✅ delete user by ID
 router.get("/users", protect, protect, getAllUsers);
 router.get("/users/:id", protect, getUser);         // ✅ get single user by ID
+router.put("/update", protect, updateAdminName);
+router.get("/profile", protect, getAdminProfile);
+router.put("/change-password", protect, updatePassword);
+router.delete('/delete-account', protect, deleteAccount);
+
+
+
 
 export default router;

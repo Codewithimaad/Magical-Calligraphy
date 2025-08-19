@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
@@ -11,35 +11,66 @@ export const AuthContext = createContext();
 
 // Provider Component
 export const AuthProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const [admin, setAdmin] = useState(null); // store logged-in admin
+  const [admin, setAdmin] = useState(null);
   const navigate = useNavigate();
+
+  // 🔹 Fetch admin profile function (now defined outside useEffect)
+  const fetchAdminProfile = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(`${backendUrl}/api/admin/profile`, {
+        withCredentials: true
+      });
+      setAdmin(data); // Set the complete admin profile
+      return data;
+    } catch (err) {
+      console.error("❌ Error fetching admin profile:", err);
+      setAdmin(null); // Clear admin on error
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Fetch profile on component mount (initial load)
+  useEffect(() => {
+    fetchAdminProfile();
+  }, [backendUrl]);
 
   const handleLogout = async () => {
     try {
       await axios.post(`${backendUrl}/api/admin/logout`, {}, { withCredentials: true });
       console.log("✅ Logged out successfully");
+      setAdmin(null); // Clear admin data on logout
       navigate("/"); // redirect to login page
     } catch (err) {
       console.error("❌ Logout failed", err);
     }
   };
 
+  // 🔹 checkAuth function
   const checkAuth = async () => {
     try {
+      // First check if the session is valid
       await axios.get(`${backendUrl}/api/admin/check-auth`, {
         withCredentials: true
       });
-      return true; // authenticated
+
+      // If valid, fetch the full profile
+      const adminData = await fetchAdminProfile();
+      return !!adminData; // Return true if we got admin data
     } catch (err) {
+      setAdmin(null); // Ensure admin is cleared on auth failure
       return false; // not authenticated
     }
   };
 
-  // FIXED handleLogin: now accepts loginData from component
+  // 🔹 handleLogin function
   const handleLogin = async (formData) => {
     try {
+      setLoading(true);
       const res = await axios.post(
         `${backendUrl}/api/admin/login`,
         {
@@ -51,20 +82,63 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (res.data.success) {
-        setAdmin(res.data.admin); // ✅ store admin info in context
-        if (formData.rememberMe) localStorage.setItem("rememberedEmail", formData.email);
-        else localStorage.removeItem("rememberedEmail");
+        // Fetch the complete profile after login
+        const adminProfile = await fetchAdminProfile();
 
-        navigate("/dashboard");
+        if (adminProfile) {
+          if (formData.rememberMe) localStorage.setItem("rememberedEmail", formData.email);
+          else localStorage.removeItem("rememberedEmail");
+
+          navigate("/analytics");
+        }
+      } else {
+        // Throw error when login fails
+        throw new Error(res.data.message || "Invalid username or password");
       }
     } catch (err) {
       console.error(err);
+      setAdmin(null); // Clear admin on login error
+      // Re-throw so frontend can catch and show the error
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
 
+  // 🔹 Function to update admin profile
+  const updateAdminProfile = async (updateData) => {
+    try {
+      setLoading(true);
+      const { data } = await axios.put(
+        `${backendUrl}/api/admin/update`,
+        updateData,
+        { withCredentials: true }
+      );
+
+      // Update the context with new data
+      setAdmin(prev => ({ ...prev, ...data }));
+      return { success: true, data };
+    } catch (err) {
+      console.error("❌ Error updating profile:", err);
+      return { success: false, error: err.response?.data?.message || "Update failed" };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ backendUrl, loading, setLoading, handleLogout, checkAuth, handleLogin, admin }}>
+    <AuthContext.Provider value={{
+      backendUrl,
+      loading,
+      setLoading,
+      handleLogout,
+      checkAuth,
+      handleLogin,
+      admin,
+      fetchAdminProfile,
+      updateAdminProfile
+    }}>
       {children}
     </AuthContext.Provider>
   );

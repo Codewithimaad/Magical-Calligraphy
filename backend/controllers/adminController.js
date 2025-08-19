@@ -67,26 +67,42 @@ const sendCourseLinkEmail = async (user) => {
 
 export const loginAdmin = async (req, res) => {
     try {
-        const { username, password, rememberMe } = req.body; // include rememberMe
+        const { username, password, rememberMe } = req.body;
+
+        // Simple validation
+        if (!username || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Username and password are required."
+            });
+        }
+
         const admin = await Admin.findOne({ username });
-        if (!admin) return res.status(400).json({ success: false, message: "Invalid credentials" });
+        if (!admin) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid username or password."
+            });
+        }
 
         const isMatch = await bcrypt.compare(password, admin.password);
-        if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials" });
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid username or password."
+            });
+        }
 
         // Set token expiry based on rememberMe
         const tokenExpiry = rememberMe ? "7d" : "1d";
-        const cookieMaxAge = rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-
         const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: tokenExpiry });
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // must be true for HTTPS
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: cookieMaxAge,
+            maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
         });
-
 
         res.json({
             success: true,
@@ -95,7 +111,10 @@ export const loginAdmin = async (req, res) => {
 
     } catch (error) {
         console.error("Admin login error:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
     }
 };
 
@@ -112,6 +131,145 @@ export const logoutAdmin = (req, res) => {
     res.json({ success: true, message: "Logged out successfully" });
 };
 
+
+// Update Admin Name
+export const updateAdminName = async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (!name || name.trim() === "") {
+            return res.status(400).json({
+                success: false,
+                message: "Name is required",
+            });
+        }
+
+        // admin id from protect middleware
+        const adminId = req.admin;
+
+        const admin = await Admin.findByIdAndUpdate(
+            adminId,
+            { name },
+            { new: true, runValidators: true }
+        );
+
+        if (!admin) {
+            return res.status(404).json({
+                success: false,
+                message: "Admin not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Admin name updated successfully",
+            admin,
+        });
+    } catch (error) {
+        console.error("Update admin name error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating admin name",
+        });
+    }
+};
+
+
+
+
+
+
+export const updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        const adminId = req.admin;
+
+        // Validate input
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ success: false, message: 'All fields are required' });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ success: false, message: 'New passwords do not match' });
+        }
+
+        if (newPassword.length < 8) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
+        }
+
+        // Password strength check
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must contain uppercase, lowercase, number, and special character'
+            });
+        }
+
+        const admin = await Admin.findById(adminId);
+        if (!admin) {
+            return res.status(404).json({ success: false, message: 'Admin not found' });
+        }
+
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, admin.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+        // Save changes
+        admin.password = hashedPassword;
+        admin.passwordChangedAt = new Date();
+        admin.updatedAt = new Date();
+
+        await admin.save();
+
+        res.status(200).json({ success: true, message: 'Password updated successfully' });
+
+    } catch (error) {
+        console.error('Password update error:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+
+export const deleteAccount = async (req, res) => {
+    const adminId = req.admin; // assuming req.user is set by auth middleware
+
+    if (!adminId) {
+        res.status(401);
+        throw new Error('Admin not found you cannot delete account.');
+    }
+
+    try {
+        await Admin.findByIdAndDelete(adminId);
+        // Optionally, clear cookies or session here
+        res.status(200).json({ message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Delete account error:', error);
+        res.status(500).json({ message: 'Failed to delete account' });
+    }
+};
+
+// 🔹 Fetch admin profile
+export const getAdminProfile = async (req, res) => {
+    try {
+        const adminId = req.admin; // or req.adminId, depending on your auth middleware
+        const admin = await Admin.findById(adminId).select("name username");
+
+        if (!admin) {
+            return res.status(404).json({ message: "Admin not found" });
+        }
+
+        res.status(200).json({ name: admin.name, username: admin.username });
+    } catch (error) {
+        console.error("Error fetching admin profile:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 
 

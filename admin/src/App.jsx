@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/authContext";
-import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
@@ -15,7 +14,6 @@ const App = () => {
         </div>
 
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/" element={<Login />} />
           <Route path="/analytics" element={<Analytics />} />

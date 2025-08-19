@@ -1,10 +1,21 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 
 const Header = ({ setIsOpen }) => {
-  const { handleLogout } = useContext(AuthContext);
+  const { handleLogout, admin } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // Get user initials for avatar
+  const getUserInitials = (name) => {
+    if (!name) return 'U'; // Default if no name
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   const logout = async () => {
     await handleLogout();
@@ -15,7 +26,7 @@ const Header = ({ setIsOpen }) => {
     <header className="relative bg-gradient-to-r from-white/90 via-slate-50/95 to-white/90 backdrop-blur-xl border-b border-slate-200/60 shadow-xl shadow-slate-900/5">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none"></div>
-      
+
       <div className="relative flex items-center justify-between h-16 px-6">
         {/* Left side - Mobile menu button */}
         <div className="flex items-center space-x-4">
@@ -27,7 +38,7 @@ const Header = ({ setIsOpen }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          
+
           {/* Page title or breadcrumb */}
           <div className="hidden md:block">
             <h2 className="text-lg font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
@@ -38,7 +49,6 @@ const Header = ({ setIsOpen }) => {
 
         {/* Right side actions */}
         <div className="flex items-center space-x-5">
-        
 
           {/* Notification bell */}
           <button className="relative p-2.5 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-white/60 backdrop-blur-sm transition-all duration-200 ring-1 ring-slate-200/40 hover:ring-slate-300/60 hover:shadow-md hover:shadow-slate-200/50 transform hover:scale-105 active:scale-95 group">
@@ -58,12 +68,18 @@ const Header = ({ setIsOpen }) => {
           {/* User Profile */}
           <div className="flex items-center space-x-3">
             <div className="hidden sm:block text-right">
-              <p className="text-sm font-semibold text-slate-800">Alex Kumar</p>
-              <p className="text-xs text-slate-500">Administrator</p>
+              <p className="text-sm font-semibold text-slate-800">
+                {admin?.name || 'User'}
+              </p>
+              <p className="text-xs text-slate-500">
+                {admin?.username || 'user@example.com'}
+              </p>
             </div>
-            
+
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 ring-2 ring-white/50 backdrop-blur-sm">
-              <span className="text-white font-bold text-sm drop-shadow-sm">AK</span>
+              <span className="text-white font-bold text-sm drop-shadow-sm">
+                {getUserInitials(admin?.name)}
+              </span>
             </div>
           </div>
 

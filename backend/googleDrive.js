@@ -47,7 +47,11 @@ export async function grantAccess(folderId, userEmail, role = "reader") {
     return { success: true, permissionId: res.data.id };
   } catch (err) {
     console.error("Drive grant error:", err.message);
-    return { success: false, error: err.message };
+    return { 
+      success: false, 
+      error: err.message,
+      code: err.code 
+    };
   }
 }
 
@@ -56,22 +60,45 @@ export async function revokeAccess(folderId, userEmail) {
   try {
     const list = await drive.permissions.list({
       fileId: folderId,
-      fields: "permissions(id,emailAddress)",
+      fields: "permissions(id,emailAddress,type,role,deleted)",
       supportsAllDrives: true,
     });
 
-    const perm = list.data.permissions.find((p) => p.emailAddress === userEmail);
-    if (!perm) return { success: false, message: "Permission not found" };
+    const userPermission = list.data.permissions.find(
+      (p) => p.emailAddress === userEmail && p.type === "user" && !p.deleted
+    );
+
+    // Treat "no explicit permission" as success
+    if (!userPermission) {
+      return { 
+        success: true, 
+        permissionId: null,
+        message: `User ${userEmail} had no explicit access.`
+      };
+    }
 
     await drive.permissions.delete({
       fileId: folderId,
-      permissionId: perm.id,
+      permissionId: userPermission.id,
       supportsAllDrives: true,
     });
 
-    return { success: true };
+    return { 
+      success: true, 
+      permissionId: userPermission.id,
+      message: `Access revoked for ${userEmail}`
+    };
   } catch (err) {
     console.error("Drive revoke error:", err.message);
-    return { success: false, error: err.message };
+    
+    if (err.code === 404) {
+      return { success: false, error: "File/folder not found", code: 404 };
+    } else if (err.code === 403) {
+      return { success: false, error: "Permission denied", code: 403 };
+    }
+
+    return { success: false, error: err.message, code: err.code };
   }
 }
+
+

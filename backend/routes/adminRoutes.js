@@ -30,8 +30,8 @@ router.get("/dashboard-stats", protect, getDashboardStats);
 router.put("/users/:id/status", protect, updateUserStatus);
 router.post("/send-link/:id", protect, sendCourseLink);
 router.delete("/users/:id", protect, deleteUser);   // ✅ delete user by ID
-router.get("/users", protect, protect, getAllUsers);
-router.get("/users/:id", protect, getUser);         // ✅ get single user by ID
+router.get("/users", getAllUsers);
+router.get("/users/:id", getUser);         // ✅ get single user by ID
 router.put("/update", protect, updateAdminName);
 router.get("/profile", protect, getAdminProfile);
 router.put("/change-password", protect, updatePassword);

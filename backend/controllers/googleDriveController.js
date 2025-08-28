@@ -12,7 +12,12 @@ export const grantDriveAccess = async (req, res) => {
     if (!email) return res.status(400).json({ error: "Email is required" });
 
     const result = await grantAccess(folderId, email, role || "reader");
-    if (!result.success) return res.status(500).json({ error: result.error });
+    if (!result.success) {
+      return res.status(500).json({ 
+        error: result.error || "Failed to grant access",
+        details: result.details 
+      });
+    }
 
     // Save folderId to user document
     const user = await User.findOne({ email });
@@ -32,19 +37,30 @@ export const grantDriveAccess = async (req, res) => {
   }
 };
 
-
 // Revoke Google Drive access from a student
 export const revokeDriveAccess = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ error: "Email is required" });
+    if (!email) return res.status(400).json({ success: false, error: "Email is required" });
 
     const result = await revokeAccess(folderId, email);
-    if (!result.success) return res.status(404).json({ error: result.message || result.error });
 
-    return res.json({ success: true, message: `Access revoked from ${email}` });
+    // Update user document to remove driveFolderId
+    const user = await User.findOne({ email });
+    if (user) {
+      user.driveFolderId = null;
+      await user.save();
+    }
+
+    if (result.success) {
+      return res.json({ success: true, message: result.message || `Access revoked from ${email}` });
+    }
+
+    return res.status(result.code || 500).json({ success: false, error: result.error || "Failed to revoke access" });
   } catch (err) {
     console.error("Revoke access error:", err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
+
+

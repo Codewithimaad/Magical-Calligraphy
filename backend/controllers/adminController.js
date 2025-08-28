@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import { revokeAccess } from "../googleDrive.js"; // your function to revoke access
+import mongoose from "mongoose";
 
 
 // Helper function to send course link email
@@ -297,17 +298,25 @@ export const getAllUsers = async (req, res) => {
 // Get single user
 export const getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID'
+            });
+        }
+
+        const user = await User.findById(req.params.id).select(
+            'fullName email whatsapp status createdAt driveFolderId paymentScreenshot'
+        );
+
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
         }
-        res.status(200).json({
-            success: true,
-            user
-        });
+
+        res.status(200).json({ success: true, user });
     } catch (error) {
         console.error('Get user error:', error);
         res.status(500).json({

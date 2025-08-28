@@ -118,7 +118,7 @@ const handleDelete = async (id) => {
 
 
 
-  const giveAccessHandler = async (email) => {
+const giveAccessHandler = async (email) => {
   try {
     const result = await MySwal.fire({
       title: `Give access to ${email}?`,
@@ -136,6 +136,13 @@ const handleDelete = async (id) => {
     );
 
     if (res.data.success) {
+      // Update local state so the button changes
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.email === email ? { ...u, driveFolderId: res.data.permissionId || 'granted' } : u
+        )
+      );
+
       MySwal.fire('Success', `${email} can now access the course!`, 'success');
     } else {
       MySwal.fire('Error', res.data.error || 'Failed to give access', 'error');
@@ -145,6 +152,7 @@ const handleDelete = async (id) => {
     MySwal.fire('Error', 'Failed to give access', 'error');
   }
 };
+
 
 const revokeAccessHandler = async (email) => {
   try {

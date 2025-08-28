@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
+import { revokeAccess } from "../googleDrive.js"; // your function to revoke access
+
 
 // Helper function to send course link email
 const sendCourseLinkEmail = async (user) => {
@@ -39,7 +41,7 @@ const sendCourseLinkEmail = async (user) => {
                       <strong>Start your journey here:</strong>
                     </p>
                     <p style="text-align: center; margin: 30px 0;">
-                      <a href="https://your-course-link.com" target="_blank" 
+                      <a href="https://drive.google.com/drive/folders/1o0nbIjlwAJKwh-3r2UzTSVKfL8cju1Be?usp=drive_link" target="_blank" 
                         style="background-color: #6b46c1; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-size: 16px; font-weight: bold;">
                         Access Your Course
                       </a>
@@ -316,28 +318,31 @@ export const getUser = async (req, res) => {
 };
 
 
-// Delete user (for admin)
+// Delete user (for admin) and remove access
 export const deleteUser = async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-        res.status(200).json({
-            success: true,
-            message: 'User deleted successfully'
-        });
-    } catch (error) {
-        console.error('Delete user error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error deleting user'
-        });
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
+
+    // Revoke Google Drive access if folderId exists
+    if (user.driveFolderId && user.email) {
+      const revokeRes = await revokeAccess(user.driveFolderId, user.email);
+      if (!revokeRes.success) {
+        console.warn(`Failed to revoke access for ${user.email}: ${revokeRes.error || revokeRes.message}`);
+      }
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, message: "User deleted and access removed successfully" });
+  } catch (error) {
+    console.error("Delete user error:", error);
+    res.status(500).json({ success: false, message: "Error deleting user" });
+  }
 };
+
 
 export const updateUserStatus = async (req, res) => {
     try {

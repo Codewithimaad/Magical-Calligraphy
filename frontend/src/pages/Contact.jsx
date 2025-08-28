@@ -2,7 +2,7 @@ import React from 'react';
 
 const Contact = () => {
     return (
-        <section className="relative min-h-screen w-full overflow-hidden px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <section className="relative min-h-screen w-full overflow-hidden px-4 sm:px-6 lg:px-8 py-16 ">
             {/* Background pattern */}
             <div className='fixed inset-0 -z-10'>
                 <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"></div>
@@ -21,7 +21,7 @@ const Contact = () => {
                 </div>
 
                 {/* Contact Form */}
-                <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-3xl p-8 shadow-xl mb-16 max-w-4xl mx-auto">
+                <div className="backdrop-blur-md md:bg-white/30 md:border border-white/20 md:rounded-3xl p-8 md:shadow-xl mb-16 max-w-4xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
                             <h2 className="text-3xl font-bold mb-6 text-gray-800">Get in Touch</h2>
@@ -128,7 +128,7 @@ const Contact = () => {
                 </div>
 
                 {/* FAQ Section */}
-                <div className="backdrop-blur-md bg-white/30 border border-white/20 rounded-3xl p-8 shadow-xl max-w-4xl mx-auto">
+                <div className="backdrop-blur-md md:bg-white/30 md:border border-white/20 md:rounded-3xl p-8 md:shadow-xl max-w-4xl mx-auto">
                     <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Frequently Asked Questions</h2>
                     <div className="space-y-4">
                         {[

@@ -39,7 +39,7 @@ const Login = () => {
                     text: 'You are already logged in!',
                     confirmButtonColor: '#6366F1',
                 });
-                navigate("/dashboard");
+                navigate("/users");
             }
         };
         verify();

@@ -30,7 +30,7 @@ const ImageSection = () => {
                     {/* Left Side - Text Content */}
                     <div className="space-y-8">
                         {/* Benefits List */}
-                        <div className="backdrop-blur-md bg-white/20 border border-white/20 rounded-2xl p-6 sm:p-8 shadow-lg">
+                        <div className="backdrop-blur-md md:bg-white/20 md:border border-white/20 md:rounded-2xl p-6 sm:p-8 md:shadow-lg">
                             <ul className="space-y-4 sm:space-y-6">
                                 {[
                                     "Write Faster",

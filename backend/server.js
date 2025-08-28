@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/configDB.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import GooleDriveRoutes from './routes/googleDriveRoutes.js'
 import cloudinary from "./config/cloudinary.js"; // ✅ Imported
 import cookieParser from "cookie-parser";
 import helmet from "helmet"; // ✅ Added
@@ -49,6 +50,8 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
+// Mount drive routes
+app.use("/api/drive", GooleDriveRoutes);
 
 // Error handler middleware
 app.use((err, req, res, next) => {

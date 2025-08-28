@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import CTAButton from "./CTAButton";
 
 const Hero = () => {
     return (
@@ -22,7 +23,7 @@ const Hero = () => {
                     </p>
 
                     {/* Benefits List */}
-                    <div className="backdrop-blur-md bg-white/20 border border-white/20 rounded-2xl p-6 sm:p-8 mb-8 sm:mb-10 shadow-lg">
+                    <div className="backdrop-blur-md md:bg-white/20 md:border border-white/20 md:rounded-2xl p-6 sm:p-8 mb-8 sm:mb-10 md:shadow-lg">
                         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-left max-w-3xl mx-auto">
                             {[
                                 "HD Recorded Video Lessons",
@@ -51,32 +52,13 @@ const Hero = () => {
                         </ul>
                     </div>
 
-                    {/* CTA Button */}
-                    <div className="space-y-4">
-                        <Link to='/register'
 
-                            className="group relative inline-flex items-center justify-center px-2 sm:px-10 py-4 sm:py-4 text-base sm:text-xl font-bold text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-xl hover:shadow-2xl hover:scale-[1.02] transform transition-all duration-300 overflow-hidden w-full sm:w-auto"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="relative z-10 flex items-center space-x-3">
-                                <span>Start Learning Today!</span>
-                                <span className="text-base sm:text-2xl font-medium">Rs 1,500</span>
-                                <span className="text-sm font-normal opacity-90">Only</span>
-                            </span>
-                            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-indigo-400/30 via-purple-400/30 to-pink-400/30 blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-                        </Link>
+{/* Example with custom props */}
+<CTAButton 
+/>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 text-base text-gray-600">
-                            <div className="flex items-center space-x-2">
-                                <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                                <span className="font-semibold">Lifetime Access</span>
-                            </div>
-                            <span className="hidden sm:inline">•</span>
-                            <span>30-Day Money-Back Guarantee</span>
-                        </div>
-                    </div>
+
+
                 </div>
             </div>
 

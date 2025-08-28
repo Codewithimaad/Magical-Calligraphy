@@ -17,6 +17,8 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(null);
+   const [deletingUserId, setDeletingUserId] = useState(null);
+
 
   // Fetch users on component mount
   const fetchUsers = async () => {
@@ -79,39 +81,110 @@ const Users = () => {
   };
   
   // Delete user handler
-  const handleDelete = async (id) => {
+
+const handleDelete = async (id) => {
+  const result = await MySwal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    setDeletingUserId(id);
+    const res = await axios.delete(`${backendUrl}/api/admin/users/${id}`, { withCredentials: true });
+
+    await MySwal.fire({
+      title: 'Deleted!',
+      text: res.data.message,
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false
+    });
+
+    fetchUsers();
+  } catch (error) {
+    console.error("Delete user error:", error);
+    MySwal.fire('Error', 'Failed to delete user.', 'error');
+  } finally {
+    setDeletingUserId(null);
+  }
+};
+
+
+
+  const giveAccessHandler = async (email) => {
+  try {
     const result = await MySwal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: `Give access to ${email}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, give access',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
+
+    const res = await axios.post(`${backendUrl}/api/drive/grant`, 
+      { email, role: 'reader' },
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
+      MySwal.fire('Success', `${email} can now access the course!`, 'success');
+    } else {
+      MySwal.fire('Error', res.data.error || 'Failed to give access', 'error');
+    }
+  } catch (err) {
+    console.error(err);
+    MySwal.fire('Error', 'Failed to give access', 'error');
+  }
+};
+
+const revokeAccessHandler = async (email) => {
+  try {
+    // Confirm dialog
+    const result = await MySwal.fire({
+      title: `Revoke access for ${email}?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, Revoke access',
+      cancelButtonText: 'Cancel'
     });
-  
-    if (result.isConfirmed) {
-      try {
-        setLoading(true);
-        const res = await axios.delete(`${backendUrl}/api/admin/users/${id}`);
-        
-        await MySwal.fire({
-          title: 'Deleted!',
-          text: res.data.message,
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false
-        });
-  
-        fetchUsers();
-      } catch (error) {
-        console.error("Delete user error:", error);
-        MySwal.fire('Error', 'Failed to delete user.', 'error');
-      } finally {
-        setLoading(false);
-      }
+
+    if (!result.isConfirmed) return;
+
+    // Call backend API to revoke access
+    const res = await axios.post(
+      `${backendUrl}/api/drive/revoke`,
+      { email }, // only email is needed
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
+      MySwal.fire('Access Revoked', `${email} no longer has access to the course.`, 'success');
+
+      // Optionally update local state to remove driveFolderId so button switches
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.email === email ? { ...u, driveFolderId: null } : u
+        )
+      );
+    } else {
+      MySwal.fire('Error', res.data.error || 'Failed to revoke access', 'error');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    MySwal.fire('Error', 'Failed to revoke access', 'error');
+  }
+};
+
+
 
   // Filter users based on search query and filters
   const filteredUsers = users.filter(user => {
@@ -325,7 +398,7 @@ const Users = () => {
             <table className="min-w-full">
               <thead className="bg-gradient-to-r from-slate-50/90 to-slate-100/90 backdrop-blur-sm border-b border-slate-200/60">
                 <tr>
-                  {['User', 'Contact', 'Payment', 'Registration Date', 'Screenshot', 'Actions'].map((header) => (
+                  {['User', 'Contact', 'Payment', 'Registration Date', 'Screenshot', 'Drive Access', 'Delete User'].map((header) => (
                     <th key={header} className="px-8 py-6 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
                       {header}
                     </th>
@@ -451,16 +524,36 @@ const Users = () => {
                           View
                         </a>
                       </td>
+                     <td className="px-8 py-6 whitespace-nowrap text-center">
+  <button
+    onClick={() => {
+      if (user.driveFolderId) {
+        revokeAccessHandler(user.email); // revoke access function
+      } else {
+        giveAccessHandler(user.email); // give access function
+      }
+    }}
+    className={`px-4 py-2 rounded-xl text-white transition-all duration-200 text-sm font-semibold transform hover:scale-105 active:scale-95 ${
+      user.driveFolderId
+        ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:shadow-red-300'
+        : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:shadow-indigo-500/25'
+    }`}
+  >
+    {user.driveFolderId ? 'Revoke Access' : 'Give Access'}
+  </button>
+</td>
+
+
 
                       <td className="px-8 py-6 whitespace-nowrap text-center">
-                        <button
-                          onClick={() => handleDelete(user._id)}
-                          disabled={loading}
-                          className="p-3 rounded-xl bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-red-500/25 transform hover:scale-110 active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Delete User"
-                        >
-                          <Trash2 className="w-5 h-5 text-white group-hover:rotate-12 transition-transform duration-200" />
-                        </button>
+                       <button
+  onClick={() => handleDelete(user._id)}
+  disabled={deletingUserId === user._id}
+  className="p-3 rounded-xl bg-gradient-to-r from-red-500 to-pink-600 ..."
+>
+  <Trash2 className="w-5 h-5 text-white" />
+</button>
+
                       </td>
                     </tr>
                   ))

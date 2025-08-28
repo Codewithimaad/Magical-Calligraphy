@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    driveFolderId: {
+        type: String, // Google Drive folder ID
+    },
 
 }, {
     timestamps: true

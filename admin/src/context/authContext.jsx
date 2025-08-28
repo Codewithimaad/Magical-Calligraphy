@@ -39,16 +39,33 @@ export const AuthProvider = ({ children }) => {
     fetchAdminProfile();
   }, [backendUrl]);
 
-  const handleLogout = async () => {
-    try {
-      await axios.post(`${backendUrl}/api/admin/logout`, {}, { withCredentials: true });
-      console.log("✅ Logged out successfully");
-      setAdmin(null); // Clear admin data on logout
-      navigate("/"); // redirect to login page
-    } catch (err) {
-      console.error("❌ Logout failed", err);
-    }
-  };
+const handleLogout = async () => {
+  try {
+    await axios.post(`${backendUrl}/api/admin/logout`, {}, { withCredentials: true });
+    setAdmin(null); // Clear admin data on logout
+
+    // Show success alert
+    await MySwal.fire({
+      title: 'Logged Out',
+      text: 'You have been logged out successfully.',
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false,
+      timerProgressBar: true,
+    });
+
+    navigate("/"); // redirect to login page after alert
+  } catch (err) {
+    console.error("❌ Logout failed", err);
+
+    // Show error alert
+    MySwal.fire({
+      title: 'Error',
+      text: 'Logout failed. Please try again.',
+      icon: 'error',
+    });
+  }
+};
 
   // 🔹 checkAuth function
   const checkAuth = async () => {

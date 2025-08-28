@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
+const MySwal = withReactContent(Swal);
 
 const DeleteAccount = ({ backendUrl }) => {
     const navigate = useNavigate();
@@ -9,18 +12,40 @@ const DeleteAccount = ({ backendUrl }) => {
     const [message, setMessage] = useState('');
 
     const handleDelete = async () => {
-        if (!window.confirm('Are you sure you want to delete your account? This action is irreversible.')) return;
+        const result = await MySwal.fire({
+            title: 'Are you sure?',
+            text: 'This action is irreversible. Your account and all data will be permanently deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+        });
+
+        if (!result.isConfirmed) return;
 
         setLoading(true);
         setMessage('');
         try {
             const res = await axios.delete(`${backendUrl}/api/admin/delete-account`, { withCredentials: true });
             setMessage(res.data.message || 'Account deleted successfully');
+
+            MySwal.fire(
+                'Deleted!',
+                res.data.message || 'Your account has been deleted.',
+                'success'
+            );
+
             // Optionally, log out or redirect the user here
             navigate("/");
         } catch (err) {
             setMessage(err.response?.data?.message || 'Failed to delete account');
             console.error(err);
+
+            MySwal.fire(
+                'Error!',
+                err.response?.data?.message || 'Failed to delete account',
+                'error'
+            );
         } finally {
             setLoading(false);
         }
